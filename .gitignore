@@ -1,0 +1,5 @@
+# Environment variables
+.env
+
+# Large data files
+*.jsonl

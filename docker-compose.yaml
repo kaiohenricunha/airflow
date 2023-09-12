@@ -1,0 +1,17 @@
+version: '3'
+services:
+  postgres:
+    image: postgres:latest
+    env_file:
+      - .env
+  
+  webserver:
+    image: apache/airflow:latest
+    depends_on:
+      - postgres
+    environment:
+      - LOAD_EX=n
+      - EXECUTOR=Local
+    volumes:
+      - ./dags:/usr/local/airflow/dags
+      - ./sql:/usr/local/airflow/sql
