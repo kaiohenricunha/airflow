@@ -1,0 +1,12 @@
+-- q2.sql
+SELECT 
+    CASE 
+        WHEN EXTRACT(HOUR FROM TO_TIMESTAMP(datahora / 1000)) BETWEEN 0 AND 6 THEN '00:01-06:00'
+        WHEN EXTRACT(HOUR FROM TO_TIMESTAMP(datahora / 1000)) BETWEEN 6 AND 12 THEN '06:01-12:00'
+        WHEN EXTRACT(HOUR FROM TO_TIMESTAMP(datahora / 1000)) BETWEEN 12 AND 18 THEN '12:01-18:00'
+        ELSE '18:01-00:00'
+    END AS time_period,
+    COUNT(DISTINCT ordem) AS num_buses
+FROM bus_data
+GROUP BY time_period
+ORDER BY time_period;
