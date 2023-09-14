@@ -1,10 +1,20 @@
 #!/bin/bash
+set -e
 
-# Make the script executable
-chmod +x /airflow-entrypoint.sh
-
-# Initialize the Airflow database and create a user
+# Initialize Airflow DB
 airflow db init
+
+if [ -z "$POSTGRES_USER" ]; then
+  echo "Error: POSTGRES_USER is not set."
+  exit 1
+fi
+
+if [ -z "$POSTGRES_PASSWORD" ]; then
+  echo "Error: POSTGRES_PASSWORD is not set."
+  exit 1
+fi
+
+# Create Airflow user
 airflow users create \
     --username $POSTGRES_USER \
     --firstname John \
@@ -13,5 +23,5 @@ airflow users create \
     --email admin@example.com \
     --password $POSTGRES_PASSWORD
 
-# Start Airflow
-exec /entrypoint
+# Start Airflow web server
+exec airflow webserver

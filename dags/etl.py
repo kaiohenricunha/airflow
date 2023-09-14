@@ -1,6 +1,7 @@
 from airflow import DAG
 from airflow.operators.python import PythonOperator
 from airflow.providers.postgres.operators.postgres import PostgresOperator
+from airflow.providers.postgres.hooks.postgres import PostgresHook
 from datetime import datetime
 import pandas as pd
 import jsonlines
@@ -20,19 +21,9 @@ def transform_data():
 
 # Function to load data into the database
 def load_to_db():
-    dbname = os.environ.get('POSTGRES_DB')
-    user = os.environ.get('POSTGRES_USER')
-    password = os.environ.get('POSTGRES_PASSWORD')
-
-    conn = psycopg2.connect(
-        dbname=dbname,
-        user=user,
-        password=password,
-        host='postgres'
-    )
-
+    postgres_hook = PostgresHook(postgres_conn_id='your_postgres_connection_id')
     df = pd.read_csv('/usr/local/airflow/dags/input/bus-api/transformed_data.csv')
-    df.to_sql('bus_data', conn, index=False, if_exists='replace')
+    df.to_sql('bus_data', postgres_hook.get_conn(), index=False, if_exists='replace')
 
 # DAG definition
 default_args = {

@@ -1,5 +1,25 @@
 # airflow
 
+## Project Description
+
+## Project Structure
+
+```md
+├── README.md
+├── docker-compose.yml
+├── dags
+│   └── input
+│       └── bus_data.jsonl
+│   └── etl.py
+├── sql
+|   └── dest_ddl.sql
+│   └── q1.sql
+│   └── q2.sql
+│   └── q3.sql
+│   └── q4.sql
+└── airflow-entrypoint.sh
+```
+
 ## Sample Data
 
 Sample JSONL data files are included in the `input/` directory, but not committed. These files contain anonymized, example data and are used to demonstrate the input format for the pipeline and should be downloaded from this google drive[https://drive.google.com/uc?export=download&id=129VK-dupdhv0a_2xSmZl1Z_hVjffjAUI] and placed in the `input/` directory.
@@ -51,10 +71,14 @@ Replace `your_db`, `your_user`, and `your_password` with your actual Postgres cr
 1. In the Airflow UI, find your DAG and click on it.
 2. Press the "Trigger DAG" button to manually start the DAG.
 
+![DAG](images/dags_view.png)
+
 ### Step 4: Monitor Execution
 
 1. Click on the "Graph View" or "Tree View" to see the tasks in your DAG.
 2. You should see the `transform_data` and `load_to_db` tasks. Their color will change based on their status (e.g., dark green for success, red for failure).
+
+
 
 ### Step 5: Check Postgres Data (Optional)
 

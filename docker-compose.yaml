@@ -1,18 +1,30 @@
 version: '3'
 services:
   postgres:
-    image: postgres:latest
+    image: postgres:13
     env_file:
       - .env
     ports:
       - "5432:5432"  # Optional, if you want to connect to Postgres from your host machine
 
   airflow-webserver:
-    image: apache/airflow:2.1.0
-    command: ["bash", "-c", "/airflow-entrypoint.sh"]  # Run the script with bash
+    image: apache/airflow:2.1.2
+    env_file:
+      - .env
+    command: ["bash", "-c", "pip install jsonlines && /airflow-entrypoint.sh"]
     volumes:
       - ./airflow-entrypoint.sh:/airflow-entrypoint.sh
-      - ./dags:/usr/local/airflow/dags
-      - ./sql:/usr/local/airflow/sql
+      - ./dags:/opt/airflow/dags  # This line maps the local 'dags' folder to the 'dags' folder in the container
+      - ./sql:/opt/airflow/sql  # This line maps the local 'sql' folder to the 'sql' folder in the container
     ports:
       - "8080:8080"
+    links:
+      - postgres
+
+  airflow-scheduler:
+    image: apache/airflow:2.1.2
+    env_file:
+      - .env
+    command: scheduler
+    links:
+      - postgres
